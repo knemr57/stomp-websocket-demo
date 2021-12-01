@@ -26,7 +26,7 @@ public class UnitUpdateProcessor extends AbstractProcessor<String, UnitUpdate> {
 
         // Must return same type as the websocket handler
         Greeting greeting = new Greeting("Hello, " + HtmlUtils.htmlEscape(value.getMessage()) + "!");
-        simpMessagingTemplate.convertAndSend("/topic/unit/updates/" + unitId, greeting);
+        simpMessagingTemplate.convertAndSend("/topic/unit." + unitId, greeting);
     }
 
 }

@@ -1,4 +1,4 @@
-var stompClient = null;
+let stompClient = null;
 
 function setConnected(connected) {
     $("#connect").prop("disabled", connected);
@@ -12,12 +12,21 @@ function setConnected(connected) {
 }
 
 function connect() {
-    var socket = new SockJS('/socket');
+    const socket = new SockJS('/socket');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
         setConnected(true);
         console.log('Connected: ' + frame);
-        stompClient.subscribe('/topic/unit/updates/' + $("#unitId").val(), function (greeting) {
+
+        const unitIdVal = $("#unitId").val();
+
+        // Note the "/topic" prefix
+        stompClient.subscribe('/topic/unit.' + unitIdVal, function (greeting) {
+            showGreeting(JSON.parse(greeting.body).content);
+        });
+
+        // Note the "/app" prefix
+        stompClient.subscribe('/app/unit.updates.' + unitIdVal, function (greeting) {
             showGreeting(JSON.parse(greeting.body).content);
         });
     });
@@ -32,7 +41,12 @@ function disconnect() {
 }
 
 function sendName() {
-    stompClient.send('/app/unit/' + $("#unitId").val(), {}, JSON.stringify({'name': $("#name").val()}));
+    let unitIdVal = $("#unitId").val();
+    let nameVal = $("#name").val();
+    let body = JSON.stringify({'name': nameVal});
+
+    // Note the "/app" prefix
+    stompClient.send('/app/unit.' + unitIdVal, {}, body);
 }
 
 function showGreeting(message) {
