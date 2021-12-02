@@ -22,6 +22,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .setSystemPasscode("guest");
 
         // RabbitMQ does not support "/" as a separator, so we will use "." as separators
+        // As the whole mapping pattern in the controller is considered as a queue name in RabbitMQ
         registry.setPathMatcher(new AntPathMatcher("."));
     }
 

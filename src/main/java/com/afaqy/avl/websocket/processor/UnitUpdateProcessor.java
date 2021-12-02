@@ -26,6 +26,8 @@ public class UnitUpdateProcessor extends AbstractProcessor<String, UnitUpdate> {
 
         // Must return same type as the websocket handler
         Greeting greeting = new Greeting("Hello, " + HtmlUtils.htmlEscape(value.getMessage()) + "!");
+
+        // Send to the RabbitMQ queue ("/topic" prefix) so whoever subscribed to this queue will receive the message
         simpMessagingTemplate.convertAndSend("/topic/unit." + unitId, greeting);
     }
 
